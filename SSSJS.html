@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ছত্তিশ সমাজ সংস্কার যুব সংঘ</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/jpg" href="https://i.ibb.co.com/My6Mn9TC/IMG-20260118-WA0000.jpg">
+    <link rel="apple-touch-icon" href="https://i.ibb.co.com/My6Mn9TC/IMG-20260118-WA0000.jpg">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a5f7a">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root { --primary: #1a5f7a; --secondary: #ffd700; --accent: #ff4b2b; --bg: #f4f7f6; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg); margin: 0; padding: 0; }
+        .header-top { background: linear-gradient(135deg, var(--primary), #0d3b4c); color: white; padding: 25px 0; text-align: center; border-radius: 0 0 30px 30px; }
+        .nav-container { background: white; display: flex; justify-content: flex-start; position: sticky; top: 0; z-index: 1000; padding: 10px; border-bottom: 2px solid #eee; overflow-x: auto; }
+        .nav-item-custom { padding: 10px 18px; color: #555; font-weight: bold; cursor: pointer; transition: 0.3s; margin: 0 5px; border-radius: 12px; white-space: nowrap; }
+        .nav-item-custom.active { background: var(--secondary); color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .notice-board { background: #fff3cd; color: #856404; padding: 8px; font-weight: bold; border-bottom: 2px solid #ffeeba; text-align: center; font-size: 14px; }
+        .page-content { display: none; padding: 20px 15px; animation: fadeInUp 0.5s ease; }
+        .active-page { display: block; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        #welcomeLoader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .loader-card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; max-width: 350px; width: 90%; }
+        .loader-logo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 20px; animation: pulse 2s infinite; }
+        .close-loader { position: absolute; top: 15px; right: 15px; font-size: 24px; color: #888; cursor: pointer; border: none; background: none; }
+
+        #searchStatus { display: none; margin-top: 15px; padding: 15px; border-radius: 15px; font-weight: bold; text-align: center; }
+        .status-loading { background: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; }
+        .status-error { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; font-size: 14px; line-height: 1.5; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .activity-card { border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 8px 25px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        .activity-img { width: 100%; height: 220px; object-fit: cover; border-bottom: 4px solid var(--primary); }
+        .list-card { background: white; border-radius: 20px; padding: 12px; margin-bottom: 15px; border-left: 8px solid; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .advisor-item { border-left-color: #ffc107; } .member-item { border-left-color: #0dcaf0; } .blood-item { border-left-color: #dc3545; }
+        .member-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; margin-right: 15px; }
+        .fin-grid { display: grid; grid-gap: 10px; grid-template-columns: repeat(3, 1fr); margin-bottom: 20px; }
+        .fin-card { border-radius: 18px; color: white; padding: 15px 5px; text-align: center; cursor: pointer; }
+        .bg-inc { background: #28a745; } .bg-exp { background: #dc3545; } .bg-bal { background: #1a5f7a; }
+        .dev-footer { text-align: center; margin-top: 35px; padding: 20px; background: white; border-radius: 20px; border: 1px solid #ddd; }
+        
+        .whatsapp-float {
+            position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px;
+            background: #25D366; color: white; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 28px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none;
+            border: 2px solid white; transition: transform 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); color: white; }
+    </style>
+</head>
+<body>
+
+<div id="welcomeLoader">
+    <div class="loader-card">
+        <button class="close-loader" onclick="closeLoader()"><i class="fas fa-times-circle"></i></button>
+        <img src="https://i.ibb.co.com/My6Mn9TC/IMG-20260118-WA0000.jpg" class="loader-logo">
+        <h4 class="fw-bold text-primary">আসসালামু আলাইকুম</h4>
+        <p class="text-dark small mb-3">"ঐক্যবদ্ধ শক্তিতে গড়ি সমৃদ্ধ সমাজ<br>ছত্তিশ সমাজ সংস্কার যুব সংঘের লক্ষ্য আজ।"</p>
+        <div class="spinner-border text-primary mb-2" role="status"></div>
+        <p class="mt-2 small text-muted">তথ্য লোড হচ্ছে, অপেক্ষা করুন...</p>
+    </div>
+</div>
+
+<div class="notice-board"><marquee id="noticeText">তথ্য লোড হচ্ছে...</marquee></div>
+
+<header class="header-top shadow">
+    <h2 class="fw-bold m-0" style="font-size: 22px;">ছত্তিশ সমাজ সংস্কার যুব সংঘ</h2>
+    <p class="m-0 small opacity-75">খয়রাতি মহল্লা, ছত্তিশ, ফেঞ্চুগঞ্জ, সিলেট</p>
+</header>
+
+<nav class="nav-container shadow-sm">
+    <div class="nav-item-custom active" onclick="changePage(this, 'home')">হোম</div>
+    <div class="nav-item-custom" onclick="changePage(this, 'reg')">রেজিস্ট্রেশন</div>
+    <div class="nav-item-custom" onclick="changePage(this, 'list')">উপদেষ্টা ও সদস্য</div>
+    <div class="nav-item-custom" onclick="changePage(this, 'blood')">রক্তদাতা</div>
+    <div class="nav-item-custom" onclick="changePage(this, 'finance')">আয়-ব্যয়</div>
+</nav>
+
+<a href="https://wa.me/8801766218475" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<div id="home" class="page-content active-page container">
+    <h4 class="text-center text-primary fw-bold mb-4">আমাদের সাম্প্রতিক কার্যক্রম</h4>
+    <div id="activityDisplay"></div>
+</div>
+
+<div id="reg" class="page-content container">
+    <div class="card p-4 shadow-sm border-0 rounded-4 mb-5">
+        <h5 class="fw-bold text-primary mb-3">সদস্য রেজিস্ট্রেশন</h5>
+        <form id="regForm">
+            <input type="text" id="uName" class="form-control mb-2" placeholder="পূর্ণ নাম" required>
+            <input type="number" id="uPhone" class="form-control mb-2" placeholder="মোবাইল নম্বর" required>
+            <select id="uBlood" class="form-select mb-2" required>
+                <option value="">রক্তের গ্রুপ</option>
+                <option>A+</option><option>B+</option><option>O+</option><option>AB+</option>
+                <option>A-</option><option>B-</option><option>O-</option><option>AB-</option>
+            </select>
+            <select id="uRole" class="form-select mb-2" required>
+                <option value="">পদবী</option>
+                <option value="সদস্য">সদস্য</option>
+                <option value="উপদেষ্টা">উপদেষ্টা</option>
+            </select>
+            <input type="file" id="uPhoto" class="form-control mb-3" accept="image/*" required>
+            <button type="submit" id="regBtn" class="btn btn-primary w-100 fw-bold">জমা দিন</button>
+        </form>
+    </div>
+    
+    <div class="text-center">
+        <h5 class="fw-bold text-success mb-3">আইডি কার্ড ডাউনলোড</h5>
+        <div class="input-group mb-2 mx-auto" style="max-width: 400px;">
+            <input type="number" id="searchPhone" class="form-control" placeholder="ফোন নম্বর">
+            <button class="btn btn-success" onclick="getDigitalID()">সার্চ</button>
+        </div>
+        <div id="searchStatus"></div>
+        <div id="idCardResult" style="display:none; margin-top: 20px;">
+            <div id="downloadArea" style="max-width: 320px; margin: auto; border: 3px solid var(--primary); border-radius: 20px; overflow: hidden; background: #fff; padding-bottom: 15px;">
+                <div style="background: var(--secondary); color: #000; font-weight: bold; padding: 6px; text-align: center;">আইডি কার্ড</div>
+                <div style="background: var(--primary); color: white; padding: 15px 10px; text-align: center;">
+                    <h6>ছত্তিশ সমাজ সংস্কার যুব সংঘ</h6>
+                    <p style="font-size: 10px;">খয়রাতি মহল্লা, ছত্তিশ, ফেঞ্চুগঞ্জ, সিলেট</p>
+                </div>
+                <div style="padding: 20px; text-align: center;">
+                    <img id="resImg" src="" style="width: 105px; height: 105px; border-radius: 50%; border: 4px solid var(--primary); object-fit: cover; margin-bottom: 5px;">
+                    <h5 id="resName" class="fw-bold m-0" style="color: var(--primary);"></h5>
+                    <span id="resRole" class="badge bg-secondary mb-2" style="font-weight: normal; font-size: 12px;"></span>
+                    <p class="text-danger fw-bold m-0" style="font-size: 14px;">রক্ত: <span id="resBlood"></span></p>
+                    <div style="background: #f8f9fa; padding: 10px; border-radius: 10px; font-size: 10px; text-align: left; border-left: 5px solid var(--primary); margin-top: 8px;">
+                        <strong>আইডি:</strong> <span id="resIDText"></span><br><strong>নীতিবাক্য:</strong> সেবাই আমাদের মূল লক্ষ্য।
+                    </div>
+                    <img id="resQR" src="" style="width: 50px; height: 50px; margin-top: 10px;">
+                </div>
+            </div>
+            <button class="btn btn-dark w-100 rounded-0 mt-3" style="max-width: 320px; margin: auto;" onclick="downloadIDCard()">ডাউনলোড PNG</button>
+        </div>
+    </div>
+</div>
+
+<div id="list" class="page-content container">
+    <h5 class="fw-bold border-start border-4 border-warning ps-2 mb-3">সম্মানিত উপদেষ্টা মণ্ডলী</h5>
+    <div id="advisorListDisplay"></div>
+    <h5 class="fw-bold border-start border-4 border-info ps-2 mt-4 mb-3">সদস্যবৃন্দ</h5>
+    <div id="memberListDisplay"></div>
+</div>
+
+<div id="blood" class="page-content container">
+    <div class="mb-4">
+        <h5 class="fw-bold text-danger"><i class="fas fa-search"></i> রক্তদাতা খুঁজুন</h5>
+        <select id="bloodFilter" class="form-select border-danger" onchange="filterBlood()">
+            <option value="all">সকল গ্রুপ</option>
+            <option>A+</option><option>B+</option><option>O+</option><option>AB+</option>
+            <option>A-</option><option>B-</option><option>O-</option><option>AB-</option>
+        </select>
+    </div>
+    <div id="bloodDonorDisplay"></div>
+</div>
+
+<div id="finance" class="page-content container">
+    <div class="fin-grid">
+        <div class="fin-card bg-inc shadow-sm" onclick="showFinanceDetails('income')"><h6>আয়</h6><h5 id="tInc">০ ৳</h5></div>
+        <div class="fin-card bg-exp shadow-sm" onclick="showFinanceDetails('expense')"><h6>ব্যয়</h6><h5 id="tExp">০ ৳</h5></div>
+        <div class="fin-card bg-bal shadow-sm" onclick="showFinanceDetails('all')"><h6>ফান্ড</h6><h5 id="cBal">০ ৳</h5></div>
+    </div>
+    <div class="card p-3 shadow-sm border-0 rounded-4 mb-4 text-center">
+        <h6 class="fw-bold mb-3">আয়-ব্যয় গ্রাফ</h6>
+        <canvas id="financeChart" style="max-height: 250px;"></canvas>
+    </div>
+    <div class="modal fade" id="financeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow">
+                <div class="modal-header"><h5 class="modal-title fw-bold" id="modalTitle">খতিয়ান</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body p-0"><div class="table-responsive"><table class="table table-striped text-center mb-0"><thead class="table-dark"><tr><th>তারিখ</th><th>নাম</th><th>বিবরণ</th><th>টাকা</th></tr></thead><tbody id="detailTableBody"></tbody></table></div></div>
+            </div>
+        </div>
+    </div>
+    <div class="dev-footer shadow-sm">
+        <h6>ডেভেলপার: মো:দিল্লুর রহমান সৌরভ</h6>
+        <a href="https://wa.me/8801799201924" class="btn btn-success rounded-pill btn-sm"><i class="fab fa-whatsapp"></i> হোয়াটসঅ্যাপ</a>
+    </div>
+</div>
+
+<footer class="bg-dark text-white py-3 text-center mt-5 small">© ২০২৬ ছত্তিশ সমাজ সংস্কার যুব সংঘ</footer>
+
+<script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzR9TP45aUx8Swh_aRiL5H7A_5HmMeXz4WM6N7-PnLwl0l6_Eni-pWm10xkevb6WERm/exec';
+    const IMGBB_KEY = 'e8304c45ff35101f03b3d6da55a8edb1';
+    let rawFinanceData = []; let allMembersData = [];
+
+    function closeLoader() { document.getElementById('welcomeLoader').style.display = 'none'; }
+    function changePage(el, id) {
+        document.querySelectorAll('.nav-item-custom').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(id).classList.add('active-page');
+    }
+
+    async function loadAll() {
+        try {
+            const nR = await fetch(`${SCRIPT_URL}?action=getNotices`);
+            const nD = await nR.json();
+            if(nD.length > 0) document.getElementById('noticeText').innerText = nD[nD.length - 1][1];
+
+            const aR = await fetch(`${SCRIPT_URL}?action=getActivities`);
+            const aD = await aR.json();
+            let aH = ''; aD.forEach(r => { aH += `<div class="activity-card"><img src="${r[2]}" class="activity-img"><div style="padding:15px;text-align:center;"><h6 class="fw-bold m-0">${r[1]}</h6><small class="text-muted">${r[0]}</small></div></div>`; });
+            document.getElementById('activityDisplay').innerHTML = aH;
+
+            const mR = await fetch(`${SCRIPT_URL}?action=getMember&phone=all`);
+            allMembersData = await mR.json();
+            renderMembers(allMembersData); filterBlood();
+
+            const fR = await fetch(`${SCRIPT_URL}?action=getFinance`);
+            rawFinanceData = await fR.json();
+            renderFinanceSummary();
+            setTimeout(closeLoader, 1000);
+        } catch (e) { setTimeout(closeLoader, 2000); }
+    }
+
+    // --- ফর্ম সাবমিট এবং গুগল শিটে পাঠানো ---
+    document.getElementById('regForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('regBtn');
+        btn.disabled = true;
+        btn.innerText = "জমা হচ্ছে...";
+
+        const name = document.getElementById('uName').value;
+        const phone = document.getElementById('uPhone').value;
+        const blood = document.getElementById('uBlood').value;
+        const role = document.getElementById('uRole').value;
+        const photoFile = document.getElementById('uPhoto').files[0];
+
+        try {
+            // ১. ইমেজ ImgBB তে আপলোড
+            const formData = new FormData();
+            formData.append('image', photoFile);
+            const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: formData });
+            const imgData = await imgRes.json();
+            const photoUrl = imgData.data.url;
+
+            // ২. গুগল শিটে ডেটা পাঠানো
+            const params = new URLSearchParams();
+            params.append('action', 'addMember');
+            params.append('name', name);
+            params.append('phone', phone);
+            params.append('blood', blood);
+            params.append('role', role);
+            params.append('photo', photoUrl);
+
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: params });
+            
+            alert("সফলভাবে রেজিস্ট্রেশন সম্পন্ন হয়েছে!");
+            document.getElementById('regForm').reset();
+            loadAll(); // তথ্য রিফ্রেশ
+        } catch (err) {
+            alert("দুঃখিত, কোনো সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "জমা দিন";
+        }
+    });
+
+    async function getDigitalID() {
+        const ph = document.getElementById('searchPhone').value;
+        const statusBox = document.getElementById('searchStatus');
+        const idCardBox = document.getElementById('idCardResult');
+        if(!ph) return;
+        idCardBox.style.display = 'none';
+        statusBox.style.display = 'block';
+        statusBox.className = 'status-loading';
+        statusBox.innerText = "তথ্য খোঁজা হচ্ছে...";
+        try {
+            const r = await fetch(`${SCRIPT_URL}?action=getMember&phone=${ph}`);
+            const d = await r.json();
+            if(d && d.name) {
+                statusBox.style.display = 'none';
+                document.getElementById('resName').innerText = d.name;
+                document.getElementById('resBlood').innerText = d.blood;
+                document.getElementById('resRole').innerText = d.role;
+                document.getElementById('resIDText').innerText = "CSS-2026-" + ph.slice(-3);
+                document.getElementById('resQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=CSS-ID-${ph}`;
+                const img = document.getElementById('resImg'); img.crossOrigin="anonymous"; img.src = d.photo;
+                idCardBox.style.display = 'block';
+            } else {
+                statusBox.className = 'status-error';
+                statusBox.innerHTML = "তথ্য পাওয়া যায়নি! রেজিস্ট্রেশন করুন।";
+            }
+        } catch (e) {
+            statusBox.className = 'status-error';
+            statusBox.innerText = "সার্ভার ত্রুটি!";
+        }
+    }
+
+    function renderMembers(data) {
+        let advH = ''; let memH = '';
+        data.forEach(i => {
+            let card = `<div class="list-card d-flex align-items-center justify-content-between ${i.role === 'উপদেষ্টা' ? 'advisor-item' : 'member-item'}"><div class="d-flex align-items-center"><img src="${i.photo}" class="member-img"><div><h6 class="mb-1 fw-bold">${i.name}</h6><span class="badge bg-danger">${i.blood}</span></div></div><a href="tel:${i.phone}" class="btn btn-success rounded-circle px-3 py-2"><i class="fas fa-phone-alt"></i></a></div>`;
+            if(i.role === 'উপদেষ্টা') advH += card; else memH += card;
+        });
+        document.getElementById('advisorListDisplay').innerHTML = advH;
+        document.getElementById('memberListDisplay').innerHTML = memH;
+    }
+
+    function filterBlood() {
+        const blood = document.getElementById('bloodFilter').value;
+        let filtered = blood === 'all' ? allMembersData : allMembersData.filter(m => m.blood === blood);
+        let h = ''; filtered.forEach(i => { h += `<div class="list-card blood-item d-flex align-items-center justify-content-between"><div class="d-flex align-items-center"><img src="${i.photo}" class="member-img"><div><h6 class="mb-1 fw-bold">${i.name}</h6><span class="badge bg-danger">${i.blood}</span></div></div><a href="tel:${i.phone}" class="btn btn-success rounded-circle px-3 py-2"><i class="fas fa-phone-alt"></i></a></div>`; });
+        document.getElementById('bloodDonorDisplay').innerHTML = h;
+    }
+
+    function renderFinanceSummary() {
+        let inc = 0, exp = 0;
+        rawFinanceData.forEach(r => {
+            const amt = parseFloat(r[4]) || 0;
+            if(r[3].trim().toLowerCase() === 'income') inc += amt; else exp += amt;
+        });
+        document.getElementById('tInc').innerText = inc + " ৳";
+        document.getElementById('tExp').innerText = exp + " ৳";
+        document.getElementById('cBal').innerText = (inc - exp) + " ৳";
+        new Chart(document.getElementById('financeChart'), { type: 'doughnut', data: { labels: ['আয়', 'ব্যয়'], datasets: [{ data: [inc, exp], backgroundColor: ['#28a745', '#dc3545'] }] } });
+    }
+
+    function showFinanceDetails(type) {
+        const modal = new bootstrap.Modal(document.getElementById('financeModal'));
+        const tbody = document.getElementById('detailTableBody');
+        let html = '';
+        let filtered = type === 'income' ? rawFinanceData.filter(r => r[3].trim().toLowerCase() === 'income') : (type === 'expense' ? rawFinanceData.filter(r => r[3].trim().toLowerCase() === 'expense') : rawFinanceData);
+        filtered.forEach(r => { html += `<tr><td>${new Date(r[0]).toLocaleDateString('bn-BD')}</td><td><strong>${r[1]}</strong></td><td>${r[2]}</td><td class="fw-bold">${r[4]}</td></tr>`; });
+        tbody.innerHTML = html; modal.show();
+    }
+
+    function downloadIDCard() {
+        html2canvas(document.getElementById('downloadArea'), { useCORS: true, scale: 3 }).then(c => {
+            const l = document.createElement('a'); l.download = 'ID_Card.png'; l.href = c.toDataURL(); l.click();
+        });
+    }
+
+    window.onload = loadAll;
+</script>
+</body>
+</html>
